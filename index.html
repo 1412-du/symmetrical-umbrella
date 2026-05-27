@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>《活着》 — 余华</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;600;700;900&family=ZCOOL+XiaoWei&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #f5f0e6;
+    --bg-warm: #ebe4d6;
+    --bg-dark: #1a1611;
+    --bg-dark-soft: #2a241e;
+    --accent: #a63d2f;
+    --accent-light: #c4564a;
+    --accent-muted: rgba(166, 61, 47, 0.15);
+    --gold: #c49b5c;
+    --gold-light: #d4b87c;
+    --text: #2d2520;
+    --text-light: #5a4e42;
+    --text-muted: #8a7e72;
+    --text-on-dark: #e8e0d4;
+    --text-on-dark-muted: #9a8e7e;
+    --border: #d5cbba;
+    --paper: #f9f5ec;
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Noto Serif SC', 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.8;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  ::selection {
+    background: var(--accent-muted);
+    color: var(--accent);
+  }
+
+  /* ===== HERO ===== */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-dark);
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 60%, rgba(166, 61, 47, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 30%, rgba(196, 155, 92, 0.06) 0%, transparent 50%);
+  }
+
+  .hero-inner {
+    position: relative;
+    text-align: center;
+    z-index: 2;
+    padding: 2rem;
+  }
+
+  .hero-label {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.3s forwards;
+  }
+
+  .hero-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(5rem, 15vw, 12rem);
+    font-weight: 400;
+    color: var(--text-on-dark);
+    letter-spacing: 0.15em;
+    line-height: 1.1;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  .hero-title .char-accent {
+    color: var(--accent);
+  }
+
+  .hero-divider {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 2.5rem auto;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.8s forwards;
+  }
+
+  .hero-author {
+    font-size: 1.1rem;
+    color: var(--text-on-dark-muted);
+    letter-spacing: 0.3em;
+    font-weight: 300;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1s forwards;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-on-dark-muted);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 1.3s forwards;
+  }
+
+  .hero-scroll .line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(0.7); }
+    50% { opacity: 1; transform: scaleY(1); }
+  }
+
+  /* ===== BOOK META ===== */
+  .book-meta {
+    background: var(--paper);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .meta-item {
+    padding: 2.5rem 2rem;
+    text-align: center;
+    border-right: 1px solid var(--border);
+    opacity: 0;
+    animation: fadeUp 0.6s ease forwards;
+  }
+  .meta-item:nth-child(1) { animation-delay: 0.1s; }
+  .meta-item:nth-child(2) { animation-delay: 0.2s; }
+  .meta-item:nth-child(3) { animation-delay: 0.3s; }
+  .meta-item:nth-child(4) { animation-delay: 0.4s; border-right: none; }
+
+  .meta-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .meta-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* ===== SECTIONS COMMON ===== */
+  section { padding: 6rem 2rem; }
+
+  .section-container {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 400;
+    line-height: 1.3;
+    margin-bottom: 2.5rem;
+    color: var(--text);
+  }
+
+  .section-text {
+    font-size: 1.05rem;
+    line-height: 2;
+    color: var(--text-light);
+    font-weight: 300;
+  }
+
+  .section-text p { margin-bottom: 1.5rem; }
+  .section-text p:last-child { margin-bottom: 0; }
+
+  /* ===== SYNOPSIS ===== */
+  .synopsis { background: var(--bg); }
+
+  .synopsis .dropcap::first-letter {
+    float: left;
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    line-height: 0.8;
+    padding-right: 0.6rem;
+    padding-top: 0.15rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* ===== PULL QUOTE ===== */
+  .pull-quote-section {
+    background: var(--bg-dark);
+    padding: 6rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pull-quote-section::before {
+    content: '\201C';
+    position: absolute;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 15rem;
+    color: rgba(166, 61, 47, 0.08);
+    line-height: 1;
+    pointer-events: none;
+  }
+
+  .pull-quote {
+    max-width: 700px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+  }
+
+  .pull-quote blockquote {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    color: var(--text-on-dark);
+    line-height: 1.8;
+    margin-bottom: 2rem;
+  }
+
+  .pull-quote cite {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+  }
+
+  /* ===== JOURNEY / TIMELINE ===== */
+  .journey { background: var(--paper); }
+
+  .timeline {
+    position: relative;
+    padding-left: 3rem;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), var(--border));
+  }
+
+  .timeline-item {
+    position: relative;
+    padding-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.7s ease;
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -3rem;
+    top: 0.5rem;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    transform: translateX(-3px);
+  }
+
+  .timeline-item:last-child { padding-bottom: 0; }
+
+  .timeline-era {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+  }
+
+  .timeline-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.3rem;
+    margin-bottom: 0.7rem;
+    color: var(--text);
+  }
+
+  .timeline-desc {
+    font-size: 0.95rem;
+    color: var(--text-light);
+    line-height: 1.9;
+    font-weight: 300;
+  }
+
+  /* ===== THEMES ===== */
+  .themes { background: var(--bg); }
+
+  .themes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+
+  .theme-card {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .theme-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .theme-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.5s ease 0.2s;
+  }
+
+  .theme-card.visible::before {
+    transform: scaleX(1);
+  }
+
+  .theme-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--accent-muted);
+    font-weight: 700;
+    margin-bottom: 1rem;
+    line-height: 1;
+  }
+
+  .theme-card-title {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+    color: var(--text);
+  }
+
+  .theme-card-text {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+    font-weight: 300;
+  }
+
+  /* ===== CHARACTERS ===== */
+  .characters { background: var(--bg-dark); }
+
+  .characters .section-label { color: var(--gold); }
+  .characters .section-title { color: var(--text-on-dark); }
+
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .char-card {
+    background: var(--bg-dark-soft);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .char-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .char-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.2rem;
+    color: var(--accent);
+  }
+
+  .char-name {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.1rem;
+    color: var(--text-on-dark);
+    margin-bottom: 0.3rem;
+  }
+
+  .char-role {
+    font-size: 0.75rem;
+    color: var(--text-on-dark-muted);
+    letter-spacing: 0.1em;
+  }
+
+  .char-desc {
+    font-size: 0.85rem;
+    color: var(--text-on-dark-muted);
+    line-height: 1.7;
+    margin-top: 0.8rem;
+    font-weight: 300;
+  }
+
+  /* ===== QUOTES COLLECTION ===== */
+  .quotes-collection {
+    background: var(--bg);
+    padding: 6rem 2rem;
+  }
+
+  .quotes-list {
+    max-width: 820px;
+    margin: 0 auto;
+  }
+
+  .quote-item {
+    padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .quote-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .quote-item:last-child { border-bottom: none; }
+
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem;
+    color: var(--accent);
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: -0.5rem;
+    opacity: 0.4;
+  }
+
+  .quote-content blockquote {
+    font-family: 'ZCOOL XiaoWei', serif;
+    font-size: 1.15rem;
+    color: var(--text);
+    line-height: 1.9;
+    margin-bottom: 0.5rem;
+  }
+
+  .quote-source {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== LEGACY ===== */
+  .legacy { background: var(--bg-dark); }
+  .legacy .section-label { color: var(--gold); }
+  .legacy .section-title { color: var(--text-on-dark); }
+  .legacy .section-text { color: var(--text-on-dark-muted); }
+
+  .legacy-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+    padding-top: 3rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .legacy-stat {
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.6s ease;
+  }
+
+  .legacy-stat.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .legacy-stat-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+    color: var(--accent);
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .legacy-stat-label {
+    font-size: 0.8rem;
+    color: var(--text-on-dark-muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* ===== FOOTER ===== */
+  footer {
+    background: var(--bg-dark);
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 3rem 2rem;
+    text-align: center;
+  }
+
+  .footer-text {
+    font-size: 0.75rem;
+    color: var(--text-on-dark-muted);
+    letter-spacing: 0.15em;
+    font-weight: 300;
+  }
+
+  .footer-text .accent { color: var(--accent); }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(25px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    .meta-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .meta-item:nth-child(2) { border-right: none; }
+    .meta-item:nth-child(1),
+    .meta-item:nth-child(2) { border-bottom: 1px solid var(--border); }
+
+    .timeline { padding-left: 2rem; }
+    .timeline-item::before { left: -2rem; }
+
+    .quote-item { flex-direction: column; gap: 0.5rem; }
+    .quote-mark { margin-top: 0; }
+
+    .legacy-stats {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    section { padding: 4rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HERO ===== -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">A Novel by Yu Hua</div>
+    <h1 class="hero-title">活<span class="char-accent">着</span></h1>
+    <div class="hero-divider"></div>
+    <p class="hero-author">余 华</p>
+  </div>
+  <div class="hero-scroll">
+    <span>向下阅读</span>
+    <div class="line"></div>
+  </div>
+</header>
+
+<!-- ===== BOOK META ===== -->
+<div class="book-meta">
+  <div class="meta-grid">
+    <div class="meta-item">
+      <div class="meta-label">作者</div>
+      <div class="meta-value">余华</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">出版年份</div>
+      <div class="meta-value">1993 年</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">体裁</div>
+      <div class="meta-value">长篇小说</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">字数</div>
+      <div class="meta-value">约 12 万字</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SYNOPSIS ===== -->
+<section class="synopsis">
+  <div class="section-container">
+    <div class="section-label">Synopsis</div>
+    <h2 class="section-title">一个关于活着的故事</h2>
+    <div class="section-text">
+      <p class="dropcap">故事的主人公叫福贵，年轻时是一个地主家的纨绔子弟。他嗜赌如命，终日沉溺于赌场与风月之间，终于将百亩家产输得精光。父亲被活活气死，妻子家珍被岳父强行接走，一夜之间，他从锦衣玉食的少爷沦为一贫如洗的佃农。</p>
+      <p>然而，命运的碾轧才刚刚开始。此后的数十年间，福贵被抓去当壮丁，经历了内战的炮火；回到家乡后，母亲早已病故，女儿凤霞因高烧变成了聋哑人。在漫长的岁月里，他逐一失去了身边最亲的人——儿子有庆因抽血过多而死，女儿凤霞难产离世，妻子家珍积劳成疾撒手人寰，女婿二喜被水泥板夹死，最后连年幼的外孙苦根也因吃豆子撑死。</p>
+      <p>到头来，偌大的人世间，只剩下福贵和一头同样名叫"福贵"的老牛相依为命。他用苍老的声音对那头牛讲述着亲人的名字，犁着暮色中的田地，平静而坚韧地——活着。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===== PULL QUOTE ===== -->
+<div class="pull-quote-section">
+  <div class="pull-quote">
+    <blockquote>人是为活着本身而活着的，而不是为了活着之外的任何事物所活着。</blockquote>
+    <cite>— 余华，《活着》</cite>
+  </div>
+</div>
+
+<!-- ===== CHARACTER JOURNEY ===== -->
+<section class="journey">
+  <div class="section-container">
+    <div class="section-label">Narrative Arc</div>
+    <h2 class="section-title">福贵的一生</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-era">地主少爷时期</div>
+        <div class="timeline-title">挥霍与堕落</div>
+        <div class="timeline-desc">福贵出身地主家庭，坐拥两百亩田地。他不学无术，终日赌博嫖娼，对妻子家珍冷眼相待，对父亲的规劝充耳不闻。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-era">倾家荡产</div>
+        <div class="timeline-title">从云端跌落泥泞</div>
+        <div class="timeline-desc">龙二设下赌局，福贵输光全部家产。父亲气绝身亡，家珍被岳父接走，昔日的少爷沦为佃农，租种从前属于自己的田地。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-era">战争年代</div>
+        <div class="timeline-title">生死一线</div>
+        <div class="timeline-desc">福贵进城为母亲抓药时被国民党军队抓去当壮丁，颠沛流离数年。他亲眼目睹了战场上无数人的死亡，在炮火中侥幸生还。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-era">新中国成立后</div>
+        <div class="timeline-title">短暂的团圆</div>
+        <div class="timeline-desc">福贵回到家乡，母亲已逝，凤霞因病聋哑。家珍带着孩子回来了，一家人虽然贫苦，却也有了短暂的温暖与安宁。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-era">大跃进时期</div>
+        <div class="timeline-title">丧子之痛</div>
+        <div class="timeline-desc">儿子有庆善良懂事，却在为县长夫人献血时被抽血过多而死。这个令人心碎的场景，成为中国当代文学中最令人难忘的段落之一。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-era">六十年代</div>
+        <div class="timeline-title">亲人接连离去</div>
+        <div class="timeline-desc">凤霞嫁给了搬运工二喜，却在生产时大出血去世。妻子家珍不久后也因软骨病离世。福贵的亲人一个接一个地离开了这个世界。</div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-era">暮年</div>
+        <div class="timeline-title">一人一牛</div>
+        <div class="timeline-desc">女婿二喜死于工地事故，外孙苦根因饥饿暴食豆子夭折。福贵买下了一头待宰的老牛，给它取名"福贵"，两个老迈的生命相依为命，在夕阳下缓缓前行。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== THEMES ===== -->
+<section class="themes">
+  <div class="section-container">
+    <div class="section-label">Themes</div>
+    <h2 class="section-title">小说的核心主题</h2>
+    <div class="themes-grid">
+      <div class="theme-card">
+        <div class="theme-number">01</div>
+        <div class="theme-card-title">活着的意义</div>
+        <div class="theme-card-text">活着不是为了追求外在的荣华或意义，而是活着本身。在一次次的毁灭之后，福贵没有选择死亡，而是以一种近乎本能的力量继续活下去。</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-number">02</div>
+        <div class="theme-card-title">苦难与忍耐</div>
+        <div class="theme-card-text">余华用冷静克制的笔触书写极端的苦难。福贵的故事不是对苦难的控诉，而是对人在苦难面前所展现出的惊人韧性的呈现。</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-number">03</div>
+        <div class="theme-card-title">命运的荒诞</div>
+        <div class="theme-card-text">小说中每一次悲剧都带着命运的荒诞色彩。有庆的死源于善意，苦根的死源于饥饿中的贪婪，命运用最残忍的方式嘲弄着最朴素的人。</div>
+      </div>
+      <div class="theme-card">
+        <div class="theme-number">04</div>
+        <div class="theme-card-title">历史的洪流</div>
+        <div class="theme-card-text">个人的命运被裹挟在历史的洪流之中——内战、土改、大跃进、文化大革命。小人物的悲欢折射出一个时代的缩影。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== KEY CHARACTERS ===== -->
+<section class="characters">
+  <div class="section-container">
+    <div class="section-label">Characters</div>
+    <h2 class="section-title">书中人物</h2>
+    <div class="char-grid">
+      <div class="char-card">
+        <div class="char-avatar">贵</div>
+        <div class="char-name">福贵</div>
+        <div class="char-role">主人公</div>
+        <div class="char-desc">从纨绔子弟到孤独老人，一生历尽劫难，却始终坚韧地活着。</div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">珍</div>
+        <div class="char-name">家珍</div>
+        <div class="char-role">福贵之妻</div>
+        <div class="char-desc">米行老板之女，不离不弃，是苦难中最温暖的存在。</div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">霞</div>
+        <div class="char-name">凤霞</div>
+        <div class="char-role">福贵之女</div>
+        <div class="char-desc">因病聋哑，善良勤劳，却在产后离世，令人扼腕。</div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">庆</div>
+        <div class="char-name">有庆</div>
+        <div class="char-role">福贵之子</div>
+        <div class="char-desc">天性纯良，热爱跑步，却因一次荒唐的献血失去了生命。</div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">喜</div>
+        <div class="char-name">二喜</div>
+        <div class="char-role">凤霞之夫</div>
+        <div class="char-desc">搬运工，老实忠厚，是凤霞短暂幸福的源泉。</div>
+      </div>
+      <div class="char-card">
+        <div class="char-avatar">根</div>
+        <div class="char-name">苦根</div>
+        <div class="char-role">外孙</div>
+        <div class="char-desc">福贵最后的亲人，年幼夭折，名字本身便是命运的注脚。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SELECTED QUOTES ===== -->
+<section class="quotes-collection">
+  <div class="section-container">
+    <div class="section-label">Passages</div>
+    <h2 class="section-title">经典段落</h2>
+  </div>
+  <div class="quotes-list">
+    <div class="quote-item">
+      <div class="quote-mark">"</div>
+      <div class="quote-content">
+        <blockquote>我知道黄昏正在转瞬即逝，黑夜从天而降了。我看到广阔的土地袒露着结实的胸膛，那是召唤的姿态，就像女人召唤着她们的儿女，土地召唤着黑夜来临。</blockquote>
+        <div class="quote-source">—— 尾声</div>
+      </div>
+    </div>
+    <div class="quote-item">
+      <div class="quote-mark">"</div>
+      <div class="quote-content">
+        <blockquote>做人还是平常点好，争这个争那个，争来争去赔了自己的命。像我这样，说起来是越混越没出息，可寿命长，我认识的人一个挨着一个死去，我还活着。</blockquote>
+        <div class="quote-source">—— 福贵</div>
+      </div>
+    </div>
+    <div class="quote-item">
+      <div class="quote-mark">"</div>
+      <div class="quote-content">
+        <blockquote>这辈子想起来也是很快就过来了，过得平平常常，我爹指望我光耀祖宗，他算是看错人了。我啊，就是这样的命。年轻时靠着祖上留下的钱风光了一阵子，往后就越过越落魄了，这样反倒好，看看我身边的人，龙二和春生，他们也只是风光了一阵子，到头来命都丢了。做人还是平常点好。</blockquote>
+        <div class="quote-source">—— 福贵</div>
+      </div>
+    </div>
+    <div class="quote-item">
+      <div class="quote-mark">"</div>
+      <div class="quote-content">
+        <blockquote>少年去游荡，中年想掘藏，老年做和尚。</blockquote>
+        <div class="quote-source">—— 民谣，贯穿全书</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LEGACY ===== -->
+<section class="legacy">
+  <div class="section-container">
+    <div class="section-label">Legacy &amp; Influence</div>
+    <h2 class="section-title">作品影响与评价</h2>
+    <div class="section-text">
+      <p>《活着》自 1993 年出版以来，已成为中国当代文学最重要的作品之一。1994 年，张艺谋将其改编为同名电影，由葛优和巩俐主演，影片荣获戛纳电影节评审团大奖。小说先后被翻译成四十余种语言，在全球范围内引起广泛共鸣。</p>
+      <p>余华曾说：「我决定写下一篇这样的小说，就是这篇《活着》，写人对苦难的承受能力，对世界乐观的态度。」这部小说以最朴素的语言，讲述了最深沉的人生哲学——在一切都被夺走之后，仅仅活着，便已是最大的勇气。</p>
+    </div>
+    <div class="legacy-stats">
+      <div class="legacy-stat">
+        <div class="legacy-stat-number">40+</div>
+        <div class="legacy-stat-label">翻译语种</div>
+      </div>
+      <div class="legacy-stat">
+        <div class="legacy-stat-number">2000万+</div>
+        <div class="legacy-stat-label">全球累计销量</div>
+      </div>
+      <div class="legacy-stat">
+        <div class="legacy-stat-number">1994</div>
+        <div class="legacy-stat-label">戛纳评审团大奖</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <p class="footer-text">
+    「人是为了活着本身而活着」 — <span class="accent">余华《活着》</span> · 1993
+  </p>
+</footer>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.15,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, observerOptions);
+
+  document.querySelectorAll('.timeline-item, .theme-card, .char-card, .quote-item, .legacy-stat').forEach(el => {
+    observer.observe(el);
+  });
+</script>
+
+</body>
+</html>
